@@ -39,19 +39,20 @@ Ext4 (Fourth Extended File System):Усовершенствованная жур
     Ext3  — используется редко, в основном в старых системах.
     Ext2  — почти не используется, иногда в специфических случаях (например, встроенные системы).
 3.	Настройте динамическую конфигурацию IP-адресов для всех хостов, используя протокол DHCP.
-На компе куда идут связи
-apt install isc-dhcp-server 
+apt install isc-dhcp-server
+Создайте конфигурационный файл с определением параметров сети и настроек DHCP-сервера.
 nano /etc/default/isc-dhcp-server
-INTERFACESv4=”vlan200
-nano /etc/dhcp/dhcpd.conf  там пишем
-option domain-name "au-team. irpo" ;
-option domain-name-servers 192.168.100.2;
-И добавляем в самом низу документа
-subnet 192.168.100.64 netmask 255.255.255.240 {
-range 192.168.100.66 192.168.100.78;
-option routers 192.168.100.65;”
-} и выходим
+INTERFACESv4=”ens4” выходим
+nano /etc/dhcp/dhcpd.conf
+раскоментировать authoritative
+option domaın - name "au-team.irро";
+option domain-name-servers 8.8.8.8; в самом низу пишем следующее:
+subnet 172.16.4.0 netmask 255.255.255 240 {
+range 172.16.4.2 172.16.4.10;
+option routers 172.16.4.1;
+} выходим
 systemctl enable--now isc-dhcp-server
 systemctl restart isc-dhcp-server
-входим на нижний и ставим автоматическое подключение.
-
+systemctl status isc-dhcp-server смотрим работает 
+переводим в nmtui соединение на клиенте в automatic
+ Запустите DHCP-сервер и проверьте, что устройства в сети получают IP-адреса автоматически.
