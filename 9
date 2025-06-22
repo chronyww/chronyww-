@@ -60,6 +60,12 @@ VPN (Virtual Private Network)  — это технология создания 
     Снижение затрат на выделенные каналы связи.
 3.	Развернуть и настроить GRE-туннель между двумя маршрутизаторами. Настроить маршруты для корректной работы трафика.
 (apt update –y)
+На ISP пишем:
+nano /etc/sysctl.conf
+Находим строчку
+#net.ipv4.ip_forward=1
+Раскомментируем её
+net.ipv4.ip_forward=1
 (iptables –t nat –A POSTROUTING –j MASQUERADE)
 (apt install iptables-persistent -y)
 (перезагрузить пк что бы интернет встал на второй комп при подключении к нему + iptables –t nat –S для проверки стоит ли построутинг и маскарад)
