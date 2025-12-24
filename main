@@ -1,0 +1,144 @@
+MISC
+networking vidaet oshibky
+nano /etc/apt/sources.list
+comentim pervuy strochky #
+ETHERNET
+na isp
+nano /etc/network/interfaces
+pishem tyda
+auto lo
+iface lo inet loopback
+auto ens3
+iface ens3 inet dhcp
+
+auto ens4
+iface ens4 inet static 
+address 172.16.1.1/28
+
+auto ens5
+iface ens5 inet static 
+address 172.16.2.1/28
+post-up nft -f /etc/nftables.conf
+sohronyaem + vihodim
+nano /etc/sysctl.d/sysctl.conf
+net.ipv4.ip_forward=1
+vihodim
+sysctl --system
+nano /etc/nftables.conf
+table ip nat {
+	chain postrouting {
+		type nat hook postrouting priority 100: policy accept
+		meta 14proto (gre, ipip, ospf counter return
+		masquerade
+	}
+}
+vihodim
+systemctl restart networking
+esli vidaet oshibky smotri napisanie aipishnikov
+zahodim na hq-rtr
+nano /etc/network/interfaces
+auto lo
+iface lo inet loopback
+
+auto ens3
+iface ens3 inet static
+address 172.16.1.2/28
+gateway 172.16.1.1
+
+post-up nft -f /etc/nftables.conf
+vihodim
+systemctl reastart networking
+ip -c -br a
+
+na br rtr
+nano/etc/network/interfaces
+
+auto lo
+iface lo inet loopback
+
+auto ens3
+iface ens3 inet static
+address 172.16.2.2/28
+gateway 172.16.2.1
+
+auto ens4
+iface ens4 inet static
+address 192.168.200.1/28
+
+post-up nft -f /etc/nftables.conf
+na hq cli
+nano/etc/network/interfaces
+
+auto lo
+iface lo inet loopback
+
+auto ens3
+iface ens3 inet static
+address 192.168.100.2/27
+gateway 192.168.100.1
+vihodim proveryeaem 
+
+na hq srv
+nano/etc/network/interfaces
+
+auto lo
+iface lo inet loopback
+
+auto ens3
+iface ens3 inet static
+address 192.168.100.34/28
+gateway 192.168.100.33
+
+vihodim proveryaem
+
+zahodim br srv
+auto lo
+iface lo inet loopback
+
+auto ens3
+iface ens3 inet static
+address 192.168.200.2/28
+gateway 192.168.200.1
+
+proveryaem
+
+NAME
+hostnamectl set-hostname ИМЯ.au-team.irpo; exec bash
+DHCP
+Установите пакет DHCP-сервера на Linux-систему.
+apt install isc-dhcp-server
+Создайте конфигурационный файл с определением параметров сети и настроек DHCP-сервера.
+nano /etc/default/isc-dhcp-server
+INTERFACESv4=”ens4” выходим
+nano /etc/dhcp/dhcpd.conf
+раскоментировать authoritative
+option domaın-name "au-team.irро";
+option domain-name-servers 192.168.100.2 (если не ворк 8.8.8.8 как до этого было); в самом низу пишем следующее:
+subnet 192.168.100.32 netmask 255.255.255 240 {
+	range 192.168.100.34 192.168.100.47;
+	option routers 192.168.100.33;
+} выходим
+systemctl enable --now isc-dhcp-server (опционально
+systemctl restart isc-dhcp-server (это тоже)
+systemctl status isc-dhcp-server смотрим работает 
+(apt update –y)
+(iptables –t nat –A POSTROUTING –j MASQUERADE)
+(apt install iptables-persistent -y)
+(перезагрузить пк что бы интернет встал на второй комп при подключении к нему + iptables –t nat –S для проверки стоит ли построутинг и маскарад)
+переводим в nmtui соединение на клиенте в automatic
+ Запустите DHCP-сервер и проверьте, что устройства в сети получают IP-адреса автоматически.
+на подопечных hq cli переписываем в /etc/network/interfaces
+auto ens3
+iface ens3 inet dhcp
+vihodim
+systemctl restart networking
+USER
+useradd -m -s /bin/bash имя -u 2026 -U
+usermod -aG sudo имя 
+passwd имя
+visudo
+имя ALL=(ALL:ALL) NOPASSWD:ALL
+su - имя
+sudo -i
+VREMYA
+timedatectl set-timezone Asia/Krasnoyarsk
